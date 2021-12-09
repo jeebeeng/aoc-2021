@@ -81,65 +81,34 @@ impl Map {
     }
 
     pub fn map_line_two(&mut self, a: &Point, b: &Point) {
-        if a.0 == b.0 { // vertical line 
-            let mut high = 0;
-            let mut low = 0;
+        let mut xs = 0;
+        let mut ys = 0;
+        let mut diff = (a.0 - b.0).abs();
 
-            if a.1 > b.1 { 
-                low = b.1;
-                high = a.1;
-            } else { 
-                low = a.1;
-                high = b.1;
-            };
-
-            for y in low..=high {
-                self.map[y as usize][a.0 as usize] += 1;
-                if self.map[y as usize][a.0 as usize] == 2 {
-                    self.overlap += 1;
-                }
-            }
-
-        } else if a.1 == b.1 { // horizontal line
-            let mut high = 0;
-            let mut low = 0;
-
-            if a.0 > b.0 { 
-                low = b.0;
-                high = a.0;
-            } else { 
-                low = a.0;
-                high = b.0; 
-            };
-
-            for x in low..=high {
-                self.map[a.1 as usize][x as usize] += 1;
-                if self.map[a.1 as usize][x as usize] == 2 {
-                    self.overlap += 1;
-                }
-            }
-
-        } else { // diagonal line
-            let mut xs = 1;
-            let mut ys = 1;
-            let mut diff = (a.0 - b.0).abs();
-
-            if a.0 > b.0 {
-                xs = -1;
-            } 
-
-            if a.1 > b.1 {
-                ys = -1;
-            } 
-
-            for i in 0..=diff {
-                self.map[(a.1 + (i * ys)) as usize][(a.0 + (i * xs)) as usize] += 1;
-                if self.map[(a.1 + (i * ys)) as usize][(a.0 + (i * xs)) as usize] == 2 {
-                    self.overlap += 1;
-                }
-            }
+        if a.1 != b.1 {
+            diff = (a.1 - b.1).abs();
         } 
-    }
+
+        if a.0 > b.0 {
+            xs = -1;
+        } else if a.0 < b.0 {
+            xs = 1;
+        }
+
+        if a.1 > b.1 {
+            ys = -1;
+        } else if a.1 < b.1 {
+            ys = 1;
+        }
+
+
+        for i in 0..=diff {
+            self.map[(a.1 + (i * ys)) as usize][(a.0 + (i * xs)) as usize] += 1;
+            if self.map[(a.1 + (i * ys)) as usize][(a.0 + (i * xs)) as usize] == 2 {
+                self.overlap += 1;
+            }
+        }
+    } 
 }
     
 fn part_one(lines: &str) -> u32 {
